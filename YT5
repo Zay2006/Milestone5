@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Viewer</title>
+  <style>
+    /* Default light theme */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+    }
+
+    header, footer {
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    main {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 20px;
+      max-width: 80%;
+      margin: 0 auto;
+    }
+
+    #video-player-container {
+      width: 100%;
+    }
+
+    iframe {
+      width: 100%;
+      height: 450px;
+      border: none;
+    }
+
+    details {
+      margin-top: 20px;
+    }
+
+    .autoplay-toggle, .navigation-buttons, select {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .navigation-buttons button {
+      margin: 0 10px;
+    }
+
+    .video-list {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+
+    .video-list-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      background-color: #fff;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      flex: 0 0 auto;
+      width: 150px;
+      margin: 0 10px;
+    }
+
+    .video-list-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .video-list-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .video-list-item p {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    /* Dark Theme */
+    body.dark-theme {
+      background-color: #181818;
+      color: #f4f4f4;
+    }
+
+    body.dark-theme header, body.dark-theme footer {
+      background-color: #1c1c1c;
+      color: #fff;
+    }
+
+    body.dark-theme .video-list-item {
+      background-color: #333;
+      border-color: #444;
+    }
+
+    body.dark-theme .video-list-item:hover {
+      background-color: #444;
+    }
+
+    /* Theme Toggle Button Styles */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle i {
+      font-size: 24px;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      background-color: #333;
+      color: white;
+    }
+
+    nav a {
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    nav a:hover {
+      background-color: #444;
+    }
+
+    /* Profile Form */
+    .profile-form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-form input, .profile-form select {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .profile-form button {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .profile-form button:hover {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>YouTube Viewer</h1>
+  </header>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#profile-section">Profile</a>
+  </nav>
+
+  <main>
+    <div id="video-player-container">
+      <iframe 
+        id="video-player" 
+        class="youtube-video" 
+        name="youtubeVideo"
+        src="https://www.youtube.com/embed/H71elxohy1Q?enablejsapi=1&rel=0&autoplay=1" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>   
+      </iframe>
+    </div>
+
+    <details>   
+      <summary>Video Description</summary>
+      <p>This video provides insights into [insert video description here]. You can use this section to provide a more detailed description of the video content.</p>
+    </details>
+
+    <div class="video-list">
+      <div class="video-list-item" onclick="loadVideo(5)">
+        <img src="https://via.placeholder.com/200x120" alt="Video 6">
+        <p>Video 1</p>
+      </div>
+      <div class="video-list-item" onclick="loadVideo(6)">
+        <img src="https://via.placeholder.com/200x120" alt="Video 7">
+        <p>Video 2</p>
+      </div>
+      <div class="video-list-item" onclick="loadVideo(7)">
+        <img src="https://via.placeholder.com/200x120" alt="Video 8">
+        <p>Video 3</p>
+      </div>
+      <div class="video-list-item" onclick="loadVideo(8)">
+        <img src="https://via.placeholder.com/200x120" alt="Video 9">
+        <p>Video 4 (Updated)</p>
+      </div>
+      <div class="video-list-item" onclick="loadVideo(9)">
+        <img src="https://via.placeholder.com/200x120" alt="Video 10">
+        <p>Video 5</p>
+      </div>
+    </div>
+
+    <div class="autoplay-toggle">
+      <label for="autoplay">Auto-play: </label>
+      <input type="checkbox" id="autoplay" name="autoplay" checked>
+    </div>
+
+    <div class="navigation-buttons">
+      <button id="prev-button">Previous</button>
+      <button id="next-button">Next</button>
+    </div>
+
+    <label for="video-category">Select Video Category:</label>
+    <select id="video-category" name="videoCategory">
+      <option value="music">Music</option>
+      <option value="education">Education</option>
+      <option value="sports">Sports</option>
+      <option value="comedy">Comedy</option>
+    </select>
+
+    <!-- Profile Form Section -->
+    <section id="profile-section">
+      <h2>Create Your Profile</h2>
+      <form id="profile-form" class="profile-form" onsubmit="return validateProfileForm(event)">
+        <input type="text" id="name" name="name" placeholder="Your Name" required>
+        <input type="email" id="email" name="email" placeholder="Your Email" required>
+        <input type="password" id="password" name="password" placeholder="Your Password" required>
+        
+        <fieldset>
+          <legend>Select Theme</legend>
+          <label for="light-theme">Light Theme</label>
+          <input type="radio" id="light-theme" name="theme" value="light" checked>
+          
+          <label for="dark-theme">Dark Theme</label>
+          <input type="radio" id="dark-theme" name="theme" value="dark">
+          
+          <label for="blue-theme">Blue Theme</label>
+          <input type="radio" id="blue-theme" name="theme" value="blue">
+        </fieldset>
+
+        <button type="submit">Save Profile</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Follow us on:</p>
+    <ul>
+      <li><a href="https://www.instagram.com/wsp._.zay/">Instagram</a></li>
+      <li><a href="https://twitter.com/yourprofile">Twitter</a></li>
+    </ul>
+  </footer>
+
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" id="theme-toggle">
+    <i class="fas fa-sun" id="theme-icon"></i>
+  </button>
+
+  <script>
+    // Video functionality
+    let currentVideo = 0;
+    const videoUrls = [
+      'https://www.youtube.com/embed/H71elxohy1Q?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/zCbl-12QV2c?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/BzFOUrqMFkE?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/jobLfA4BpXk?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/no8vgXg_rlw?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/LuVAWbg4kns?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/zYPX3iSUhZ4?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/165Jdjqamo0?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/Z9G1Mf6TZRs?enablejsapi=1&rel=0&autoplay=1',
+      'https://www.youtube.com/embed/ybKoaACASQU?enablejsapi=1&rel=0&autoplay=1'
+    ];
+
+    let player;
+
+    function loadVideo(index) {
+      if (index >= 0 && index < videoUrls.length) {
+        currentVideo = index;
+        const videoSrc = videoUrls[currentVideo];
+        const videoPlayer = document.getElementById('video-player');
+        videoPlayer.src = videoSrc;
+        if (document.getElementById('autoplay').checked) {
+          player.playVideo();
+        }
+      }
+    }
+
+    document.getElementById('next-button').addEventListener('click', () => {
+      if (currentVideo < videoUrls.length - 1) {
+        loadVideo(currentVideo + 1);
+      }
+    });
+
+    document.getElementById('prev-button').addEventListener('click', () => {
+      if (currentVideo > 0) {
+        loadVideo(currentVideo - 1);
+      }
+    });
+
+    function onPlayerStateChange(event) {
+      const autoplayEnabled = document.getElementById('autoplay').checked;
+      if (event.data === YT.PlayerState.ENDED && autoplayEnabled) {
+        currentVideo++;
+        if (currentVideo < videoUrls.length) {
+          loadVideo(currentVideo);
+        }
+      }
+    }
+
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('video-player', {
+        events: {
+          'onStateChange': onPlayerStateChange
+        },
+        playerVars: {
+          autoplay: 1,
+          rel: 0
+        }
+      });
+    }
+
+    // Theme toggle functionality
+    const themeToggleButton = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    themeToggleButton.addEventListener('click', () => {
+      document.body.classList.toggle('dark-theme');
+      if (document.body.classList.contains('dark-theme')) {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      } else {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      }
+    });
+
+    // Profile form validation and storage
+    function validateProfileForm(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      if (name.length < 4) {
+        alert('Name must be at least 4 characters long.');
+        return false;
+      }
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const theme = document.querySelector('input[name="theme"]:checked').value;
+      
+      const userProfile = { name, email, password, theme };
+      localStorage.setItem('userProfile', JSON.stringify(userProfile));
+      
+      alert('Profile saved successfully!');
+      return true;
+    }
+
+    // Load user settings from local storage if available
+    window.onload = () => {
+      const savedProfile = JSON.parse(localStorage.getItem('userProfile'));
+      if (savedProfile) {
+        document.getElementById('name').value = savedProfile.name;
+        document.getElementById('email').value = savedProfile.email;
+        document.getElementById('password').value = savedProfile.password;
+        
+        document.querySelector(`input[name="theme"][value="${savedProfile.theme}"]`).checked = true;
+      }
+    };
+  </script>
+</body>
+</html>
